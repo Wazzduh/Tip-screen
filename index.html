@@ -1,59 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Tip Screen</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <title>Tip App</title>
+  <link rel="manifest" href="manifest.json" />
   <style>
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
-      background-color: #f4f4f4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
     }
-
-    .container {
+    .card {
+      width: min(92vw, 420px);
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
       text-align: center;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+    }
+    p {
+      margin: 0 0 22px;
+      color: #4b5563;
+      font-size: 1rem;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
     button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background-color: #007BFF;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      background: #2563eb;
       color: white;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
     }
-
-    button:hover {
-      background-color: #0056b3;
+    button:hover { opacity: 0.95; }
+    button:active { transform: scale(0.98); }
+    .secondary { background: #6b7280; }
+    .thank-you {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #16a34a;
+      margin-top: 8px;
+    }
+    .subtext {
+      margin-top: 10px;
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
+  <main class="card" id="app">
+    <h1>Leave a Tip</h1>
+    <p>Choose an option below.</p>
+    <div class="buttons">
+      <button data-tip="$2">$2</button>
+      <button data-tip="$5">$5</button>
+      <button data-tip="$10">$10</button>
+      <button class="secondary" data-tip="No Tip">No Tip</button>
+    </div>
+  </main>
 
-<div class="container" id="main">
-  <h2>Leave a Tip</h2>
-  <p>Select an amount:</p>
-  <button onclick="thankYou()">$2</button>
-  <button onclick="thankYou()">$5</button>
-  <button onclick="thankYou()">$10</button>
-  <button onclick="thankYou()">No Tip</button>
-</div>
+  <script>
+    const app = document.getElementById('app');
 
-<script>
-  function thankYou() {
-    document.getElementById("main").innerHTML = "<h2>Thank you!</h2>";
-  }
-</script>
+    app.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-tip]');
+      if (!button) return;
 
+      app.innerHTML = `
+        <h1>Thank you!</h1>
+        <div class="thank-you">✓</div>
+        <p class="subtext">Your selection was received.</p>
+      `;
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
